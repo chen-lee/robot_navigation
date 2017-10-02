@@ -1,0 +1,8 @@
+prefix=/home/chenlee/robot_navigation/devel
+
+Name: ekf
+Description: Description of ekf
+Version: 0.0.0
+Cflags: -I/home/chenlee/robot_navigation/devel/include
+Libs: -L/home/chenlee/robot_navigation/devel/lib 
+Requires: 

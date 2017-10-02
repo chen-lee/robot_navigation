@@ -1,0 +1,8 @@
+prefix=/home/chenlee/robot_navigation/install
+
+Name: blind_climbing
+Description: Description of blind_climbing
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/chenlee/robot_navigation/install/lib 
+Requires: 

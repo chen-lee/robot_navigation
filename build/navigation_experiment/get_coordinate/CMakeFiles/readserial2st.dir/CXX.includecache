@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/chenlee/robot_navigation/src/navigation_experiment/get_coordinate/src/readserial2st.cpp
+string
+-
+ros/ros.h
+-
+sensor_msgs/JointState.h
+-
+tf/transform_broadcaster.h
+-
+nav_msgs/Odometry.h
+-
+boost/asio.hpp
+-
+boost/bind.hpp
+-
+math.h
+-
+std_msgs/String.h
+/home/chenlee/robot_navigation/src/navigation_experiment/get_coordinate/src/std_msgs/String.h
+stdio.h
+-
+string.h
+-
+unistd.h
+-
+fcntl.h
+-
+errno.h
+-
+termios.h
+-
+readserial2st/position.h
+/home/chenlee/robot_navigation/src/navigation_experiment/get_coordinate/src/readserial2st/position.h
+

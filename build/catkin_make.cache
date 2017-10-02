@@ -1,0 +1,2 @@
+navigation_experiment/blind_climbing:navigation_experiment/get_coordinate:navigation_experiment/multisensor_information_fusion:navigation_gazebo/blind_climbing_gazebo
+-DCATKIN_DEVEL_PREFIX=/home/chenlee/robot_navigation/devel -DCMAKE_INSTALL_PREFIX=/home/chenlee/robot_navigation/install -G Unix Makefiles

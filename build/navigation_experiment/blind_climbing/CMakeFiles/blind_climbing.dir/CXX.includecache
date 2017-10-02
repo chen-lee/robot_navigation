@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/chenlee/robot_navigation/src/navigation_experiment/blind_climbing/src/blind_climbing.cpp
+ros/ros.h
+-
+sensor_msgs/LaserScan.h
+-
+geometry_msgs/Twist.h
+-
+multisensor_information_fusion/pos.h
+-
+unistd.h
+-
+
