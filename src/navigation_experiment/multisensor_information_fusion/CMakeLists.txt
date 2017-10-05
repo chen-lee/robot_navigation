@@ -47,7 +47,7 @@ message_generation
 ## Generate messages in the 'msg' folder
 add_message_files(
    FILES
-   pos.msg
+   pose.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -115,9 +115,9 @@ catkin_package(
 # include_directories(include)
 
 ## Declare a C++ library
-# add_library(ekf
-#   src/${PROJECT_NAME}/ekf.cpp
-# )
+#add_library(multisensor_information_fusion
+ #  src/${PROJECT_NAME}/multisensor_information_fusion.py
+#)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

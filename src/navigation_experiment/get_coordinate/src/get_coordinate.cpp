@@ -158,10 +158,6 @@ get_coordinate_two_dimension::~get_coordinate_two_dimension()
  
 int main(int argc, char **argv)
 {
-    //ros initial
-    ros::init(argc, argv, "position");
-    ros::NodeHandle n;
-    ros::Publisher pub = n.advertise<get_coordinate::position>("position",1);
     get_coordinate_two_dimension *p = new get_coordinate_two_dimension( 
                                      "/dev/ttyUSB0", 4370, 0, 0, 0, 0, 5590,5);
     p->thread_work();
