@@ -65,7 +65,6 @@ get_coordinate_two_dimension::get_coordinate_two_dimension(char *port_device,int
     options.c_cflag |= CS8;
     tcsetattr(fd, TCSANOW, &options);
     //ros initial
-    //ros::init();
     pub = n.advertise<get_coordinate::position>("position",1);
 }
 
@@ -158,8 +157,9 @@ get_coordinate_two_dimension::~get_coordinate_two_dimension()
  
 int main(int argc, char **argv)
 {
+    ros::init(argc, argv, "get_position");
     get_coordinate_two_dimension *p = new get_coordinate_two_dimension( 
-                                     "/dev/ttyUSB0", 4370, 0, 0, 0, 0, 5590,5);
+                                     "/dev/ttyUSB_uwb", 4370, 0, 0, 0, 0, 5590,5);
     p->thread_work();
     delete p;
 }
