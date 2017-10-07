@@ -10,6 +10,10 @@ from sensor_msgs.msg import Imu#导入陀螺仪数据
 from multisensor_information_fusion.msg import pose  #发布滤波后的消息
 import numpy as np
 from extended_kalman_filter import EKF
+import threading
+import matplotlib.pyplot as plt
+import multiprocessing
+from show_trajectory import show_traject
 
 def quit(signum, frame):
     print ''
@@ -19,7 +23,12 @@ def quit(signum, frame):
 class Fusion:
     def __init__(self):
         signal.signal(signal.SIGINT, quit)
-        signal.signal(signal.SIGTERM, quit)
+        signal.signal(signal.SIGTERM, quit)        
+        self.raw_x = 0.1
+        self.raw_y = 0.1
+        self.raw_yaw = 0.001
+        self.raw_v = 0.001
+        self.raw_yaw_v = 0.001
         #ros initial
         rospy.init_node('listener', anonymous=True)
         #subscriber sensor topic
@@ -30,11 +39,6 @@ class Fusion:
         self.pub = rospy.Publisher("pose",pose,queue_size = 1)
         #extended kalman filter parameter setting
         num_states = 5
-        self.raw_x = 0.1
-        self.raw_y = 0.1
-        self.raw_yaw = 0.001
-        self.raw_v = 0.001
-        self.raw_yaw_v = 0.001
         dt = 1.0/50.0
         rate = 1 / dt
         self.r = rospy.Rate(rate)
@@ -43,6 +47,7 @@ class Fusion:
         initial_state = [self.raw_x,self.raw_y,0.1,
                          self.raw_v,self.raw_yaw_v]
         self.ekf = EKF(initial_state)
+        self.optimal_estimate = [0.1,0.1,0.1,0.1,0.1]
     
     def publish_ros_topic(self,optimal_estimate):
         pos = pose()
@@ -53,29 +58,39 @@ class Fusion:
         pos.dpsi = optimal_estimate[4]
         self.pub.publish(pos)
 
-    def fusion_process(self):
+    def fusion_thread(self):
         while True:
             measurement = [self.raw_x,self.raw_y,
                            self.raw_v,self.raw_yaw_v]
-            optimal_estimate = self.ekf.extended_kalman_filter(measurement)
+            self.optimal_estimate = self.ekf.extended_kalman_filter(measurement)
             self.r.sleep()
-            print optimal_estimate
-            self.publish_ros_topic(optimal_estimate)
-
+            print self.optimal_estimate
+            self.publish_ros_topic(self.optimal_estimate)
+    
     #callback function get position x , y
     def callback_position(self, data):
-        print "callback_position"
         self.raw_x = data.positionX / 1000.0
         self.raw_y = data.positionY / 1000.0
+        #print "from sensor: %f %f" %(self.raw_x,self.raw_y)
 
     #callback function get speed
     def callback_odom(self, data):
         self.raw_v = data.twist.twist.linear.x
+        #print "from sensor : %f" %self.raw_v
     
     #callback function get angle speed
     def callback_imu(self,data):
         self.raw_yaw_v = data.angular_velocity.z
-
+        #print self.raw_yaw_v
+    
 if __name__ == '__main__':
     fusion = Fusion()
-    fusion.fusion_process()
+    fusion.fusion_thread()
+    #p1 = multiprocessing.Process(target = fusion.fusion_thread)
+    #p2 = multiprocessing.Process(target = show_traject)
+    #p1.daemon = True
+    #p2.daemon = True
+    #p1.start()
+    #p2.start()
+
+

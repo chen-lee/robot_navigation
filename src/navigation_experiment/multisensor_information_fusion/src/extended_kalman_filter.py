@@ -35,6 +35,8 @@ class EKF:
         about state function see the paper for details
     '''
     def state_estimate(self,x):
+        if x[4] == 0:
+            x[4] = 0.000001
         x[0] = x[0] + (x[3]/x[4]) * (np.sin(x[4]*self.dt+x[2]) - np.sin(x[2]))
         x[1] = x[1] + (x[3]/x[4]) * (-np.cos(x[4]*self.dt+x[2]) + np.cos(x[2]))
         x[2] = (x[2] + x[4]*self.dt) % (2.0*np.pi)
