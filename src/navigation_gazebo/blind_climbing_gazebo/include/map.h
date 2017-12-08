@@ -24,7 +24,8 @@ public:
     map<int, float> build_index_val(float &start, int &num, float &i);
     map<float, int> build_val_index(float &start, int &num, float &i);
     int nearest_node_index(float &val, map<float, int> &val_index);
-    vector<vector<int> > square_region_node(int &min, int &max, vector<float> robo_pose);
+    vector<vector<int> > square_region_node(int &min, int &max, vector<float> &robo_pose);
+    vector<vector<int> > circle_region_node(float &min, float &max, vector<float> &robo_pose);
     float evaluation_fun(float &x, float &y, float &aim_x, float &aim_y); 
     vector<vector<int> > filter_node(vector<vector<int> > &region_node);
     vector<float> optimal_node(vector<vector<int> > &node, vector<float> &goal_pose);

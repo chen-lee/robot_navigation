@@ -64,7 +64,7 @@ int Map::nearest_node_index(float &val, map<float, int> &val_index)
     x[n][0] x[n][1]
     */
 
-vector<vector<int> > Map::square_region_node(int &min, int &max, vector<float> robo_pose)
+vector<vector<int> > Map::square_region_node(int &min, int &max, vector<float> &robo_pose)
 {
     float x = robo_pose[0];
     float y = robo_pose[1];
@@ -90,6 +90,11 @@ vector<vector<int> > Map::square_region_node(int &min, int &max, vector<float> r
     return x_y_index;
 }
 
+vector<vector<int> > Map::circle_region_node(float &min, float &max, vector<float> &robo_pose)
+{
+    
+}
+
 vector<vector<int> > Map::filter_node(vector<vector<int> > &region_node)
 {
     vector<int> x_index_vec;
@@ -99,7 +104,7 @@ vector<vector<int> > Map::filter_node(vector<vector<int> > &region_node)
     {
         int x_index = region_node[0][i];
         int y_index = region_node[1][i];
-        if(grid_map[x_index][y_index] != 0) 
+        if(grid_map[x_index][y_index] == 0) 
         {
             x_index_vec.push_back(x_index);
             y_index_vec.push_back(y_index);

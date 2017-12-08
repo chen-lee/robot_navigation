@@ -60,6 +60,7 @@ float Control_Var::yaw_var(vector<float> &robo_pose)
             err_yaw = raw_err_yaw_2; 
         }
     }
+    if(isnan(err_yaw) == true) err_yaw = 0;
     u = 2 * err_yaw;
     //cout << " err_yaw " << err_yaw  << endl;
     return u;  

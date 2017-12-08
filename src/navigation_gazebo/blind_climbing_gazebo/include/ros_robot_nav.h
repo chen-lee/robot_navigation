@@ -18,6 +18,7 @@ public:
     void gps_callback(const sensor_msgs::NavSatFix& gps_data);
     void imu_callback(const sensor_msgs::Imu& imu_data);
     bool run_node(vector<float> &aim_node);
+    bool turn_node(vector<float> &aim_node);
     bool reach_node(vector<float> &aim_node);
     bool climb_goal(vector<float> &goal_pose);
 

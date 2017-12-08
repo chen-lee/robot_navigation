@@ -2,7 +2,7 @@
 #include "obstacle_avoid.h"
 #include <vector>
 #include <map>
-const float OBSTACLE_DISTANCE = 0.5;
+const float OBSTACLE_DISTANCE = 0.6;
 
 bool Obstacle_Avoidance::exist_obstacle(std::map<float, float> &angle_dis)
 {

@@ -21,12 +21,10 @@ Robot_Nav::Robot_Nav()
 {
     run_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi", 1000);
     scan_sub = nh.subscribe("/scan", 1, &Robot_Nav::scan_callback,this);
-    pose_sub = nh.subscribe("/pose", 1, &Robot_Nav::pose_callback,this);
+    //pose_sub = nh.subscribe("/pose", 1, &Robot_Nav::pose_callback,this);
     gps_sub = nh.subscribe("/sensor_msgs/NavSatFix", 1, &Robot_Nav::gps_callback,this);
     imu_sub = nh.subscribe("/mobile_base/sensors/imu_data", 1, &Robot_Nav::imu_callback,this);
-    robo_pose.push_back(0);
-    robo_pose.push_back(0);
-    robo_pose.push_back(0);
+    robo_pose = vector<float>(3,0);
     sleep(2); //wait 2s
     cout << " robot navigation initial success... " << endl;
 }
@@ -40,6 +38,12 @@ void Robot_Nav::scan_callback(const sensor_msgs::LaserScan& scan_data)
        {
            float angle = scan_data.range_min + i * scan_data.angle_increment;
            float dis = scan_data.ranges[i];
+           scan_angle_dis[angle] = dis;
+       }
+       else
+       {
+           float angle = scan_data.range_min + i * scan_data.angle_increment;
+           float dis = 100;
            scan_angle_dis[angle] = dis;
        }
 
@@ -104,19 +108,55 @@ bool Robot_Nav::run_node(vector<float> &aim_node)
     geometry_msgs::Twist vel;
     Obstacle_Avoidance oa;
     Control_Var cv(aim_node);
-    ros::Rate loop_rate(50);
+    //ros::Rate loop_rate(50);
     while(ros::ok())
     {
         ros::spinOnce();
-        if(reach_node(aim_node))  break;
-        if(oa.exist_obstacle(scan_angle_dis) == false) return false;
+        if(reach_node(aim_node))  
+        {
+            cout << "break! reach the node" << endl;
+            break;
+        }
+        if(oa.exist_obstacle(scan_angle_dis) == false) 
+        {
+            cout << "break!there are obstacles!" << endl;
+            return false;
+        }
         float speed_u, yaw_u;
         speed_u = cv.speed_var(robo_pose);
         yaw_u = cv.yaw_var(robo_pose);
+        cout <<"speed_yaw:" <<speed_u <<" " << yaw_u  <<endl;
+        cout <<"robot_pose:" <<robo_pose[0] << " " << robo_pose[1]<<" " <<robo_pose[2] << endl;
         vel.linear.x = speed_u;
         vel.angular.z =  yaw_u;
         run_pub.publish(vel);
-        loop_rate.sleep();
+        //loop_rate.sleep();
+        usleep(20000);
+    }
+    return true;
+}
+
+bool Robot_Nav::turn_node(vector<float> &aim_node)
+{
+    geometry_msgs::Twist vel;
+    Control_Var cv(aim_node);
+    while(ros::ok())
+    {
+        ros::spinOnce();
+        if(reach_node(aim_node))  
+        {
+            cout <<"break! reach the node" << endl;
+            break;
+        }
+        float speed_u, yaw_u;
+        yaw_u = cv.yaw_var(robo_pose);
+        cout <<"yaw:" << yaw_u  <<endl;
+        cout <<"robot_pose:" <<robo_pose[0] << " " << robo_pose[1]<<" " <<robo_pose[2] << endl;
+        vel.angular.z =  yaw_u;
+        if(fabs(yaw_u) < 0.01) break;
+        run_pub.publish(vel);
+        //loop_rate.sleep();
+        usleep(20000);
     }
     return true;
 }
@@ -125,15 +165,19 @@ bool Robot_Nav::climb_goal(vector<float> &goal_pose)
 {
     Map gm(100, 100, 0.5, -25.25, -25.25);
     int local_min = 1, local_max = 2;
-    ros::Rate loop_rate(50);
+    //ros::Rate loop_rate(50);
     while(ros::ok())
     {
         ros::spinOnce();
         vector<vector<int> > local_node_index;
+        vector<vector<int> > local_node_index_filter;
         local_node_index = gm.square_region_node(local_min, local_max, robo_pose);
+        local_node_index_filter = gm.filter_node(local_node_index);
+        cout << "local_node_num:" << local_node_index_filter[0].size() << endl;
         vector<float> op_node;
-        op_node = gm.optimal_node(local_node_index, goal_pose);
+        op_node = gm.optimal_node(local_node_index_filter, goal_pose);
         cout <<"optimal:" <<op_node[0] <<" " <<op_node[1] << endl;
+        bool turn = turn_node(op_node);
         bool reach = run_node(op_node);
         if(reach) 
         {
@@ -145,7 +189,8 @@ bool Robot_Nav::climb_goal(vector<float> &goal_pose)
             cout << "can't reach!!"  << endl;
             gm.add_unreach_node(op_node);
         }
-        loop_rate.sleep();
+        usleep(20000);
+       //loop_rate.sleep();
         if(reach_node(goal_pose)) break;
     }
     return true;
