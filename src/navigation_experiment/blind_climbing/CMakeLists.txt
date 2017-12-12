@@ -6,11 +6,8 @@ project(blind_climbing)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
 roscpp
-
-ekf
-
+multisensor_information_fusion
 geometry_msgs
-tf
 
 )
 
@@ -116,7 +113,7 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+include_directories(include include)
 
 ## Declare a C++ library
 # add_library(uwbblindclimbing
@@ -129,7 +126,13 @@ catkin_package(
 # add_dependencies(uwbblindclimbing ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(blind_climbing src/blind_climbing.cpp)
+add_executable( blind_climbing 
+                src/main.cpp
+                src/ros_robot_nav.cpp
+                src/control_var.cpp 
+                src/obstacle_avoid.cpp
+                src/map.cpp
+                )
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

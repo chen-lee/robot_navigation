@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include<sensor_msgs/LaserScan.h>
 #include<geometry_msgs/Twist.h>
-#include<multisensor_information_fusion/pos.h>
+#include<multisensor_information_fusion/pose.h>
 #include<unistd.h> //暂停函数，把进程挂起一段时间
 
 using namespace std;
@@ -16,7 +16,7 @@ float dx = 0;
 float dpsi = 0;
 
 
-void RobotPos(const multisensor_information_fusion::pos& pos)
+void RobotPos(const multisensor_information_fusion::pose& pos)
 {
   x = pos.x;
   y = pos.y;

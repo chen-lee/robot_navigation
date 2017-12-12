@@ -44,11 +44,11 @@
 
   <build_depend>geometry_msgs</build_depend>
 
-  <build_depend>ekf</build_depend>
+  <build_depend>multisensor_information_fusion</build_depend>
   <build_depend>tf</build_depend>
   
   <run_depend>roscpp</run_depend>
-  <run_depend>ekf</run_depend>
+  <run_depend>mutisensor_information_fusion</run_depend>
   <run_depend>geometry_msgs</run_depend>
  
   <run_depend>tf</run_depend>
